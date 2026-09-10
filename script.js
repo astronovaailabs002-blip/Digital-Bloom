@@ -3,6 +3,43 @@ document.addEventListener('DOMContentLoaded', function () {
   var nav = document.querySelector('.nav');
   var toggle = document.querySelector('.nav-burger');
   var links = document.querySelector('.nav-links');
+  var navLogo = document.querySelector('.nav-logo');
+  var navBase = navLogo && navLogo.getAttribute('href').indexOf('../') === 0 ? '../index.html' : 'index.html';
+  if (links) {
+    var contactLink = links.querySelector('.nav-cta');
+    var blogLink = links.querySelector('a[href$="blog.html"]');
+    [['Services', navBase + '#services'], ['Projects', navBase + '#projects']].forEach(function (item) {
+      if (!links.querySelector('a[href="' + item[1] + '"]')) {
+        var link = document.createElement('a');
+        link.href = item[1];
+        link.textContent = item[0];
+        links.insertBefore(link, blogLink || contactLink);
+      }
+    });
+    if (contactLink && !links.querySelector('.nav-whatsapp')) {
+      var chat = document.createElement('a');
+      chat.className = 'nav-whatsapp';
+      chat.href = navBase.replace('index.html', 'contact.html');
+      chat.title = 'WhatsApp: @nilufar__.naaz';
+      chat.setAttribute('aria-label', 'Let\'s Chat on WhatsApp: @nilufar__.naaz');
+      chat.innerHTML = '<i class="fa-brands fa-whatsapp" aria-hidden="true"></i><span>Let\'s Chat</span>';
+      links.appendChild(chat);
+    }
+  }
+  document.querySelectorAll('main section').forEach(function (section) {
+    var heading = section.querySelector('.section-heading');
+    if (!heading) return;
+    var text = heading.textContent;
+    if (text.indexOf('What I do') !== -1) section.id = 'services';
+    if (text.indexOf('Featured skills') !== -1) section.id = 'projects';
+  });
+  if (navLogo) {
+    var logoImage = document.createElement('img');
+    logoImage.className = 'nav-logo-image';
+    logoImage.src = navLogo.getAttribute('href').indexOf('../') === 0 ? '../nilufar-logo-navbar.png' : 'nilufar-logo-navbar.png';
+    logoImage.alt = 'Nilufar Naaz';
+    navLogo.replaceChildren(logoImage);
+  }
   function updateNav() { if (nav) nav.classList.toggle('scrolled', window.scrollY > 8); }
   updateNav();
   window.addEventListener('scroll', updateNav, { passive: true });
